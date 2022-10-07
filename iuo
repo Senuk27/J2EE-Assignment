@@ -1,0 +1,39 @@
+String email=request.getParameter("email");
+        String password=request.getParameter("password");
+        PrintWriter out=response.getWriter();
+
+             try{
+        String url="jdbc:mysql://localhost:3306/phoenixairlines";
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con= DriverManager.getConnection(url,"root","");
+        Statement st=con.createStatement();
+        String sql="select * from user_details where email='"+email+"'";
+        ResultSet rs=st.executeQuery(sql);
+        while(rs.next()){
+        String pw=rs.getString("password");
+        String type=rs.getString("user_type");
+        int approve=Integer.parseInt(rs.getString("approval"));
+        if(password == null ? pw == null : password.equals(pw)){
+            if("staff".equals(type)||"staff_grade2".equals(type)){
+                if(approve==1){
+        response.sendRedirect("StaffDashboard.jsp");}
+                else{
+                    response.sendRedirect("NotApprovedAccount.jsp");
+                      
+                }
+        }
+            else if("client".equals(type)){
+                response.sendRedirect("ClientDashboard.jsp");
+            }
+            else{
+                response.sendRedirect("AdminDashboard.jsp");
+            }
+        }
+        else{
+            response.sendRedirect("login.html");
+        }
+        }
+             }
+             catch(Exception e){
+                 
+             }
